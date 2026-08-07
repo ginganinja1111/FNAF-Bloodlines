@@ -1,0 +1,920 @@
+:root {
+  --bg-base: #2b2b2b;
+  --bg-deep: #161514;
+  --gold: #f5a623;
+  --ember: #d9720a;
+  --blood: #8b1a1a;
+  --ash: #ece6da;
+  --ash-dim: #948e83;
+  --white: #ffffff;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: auto; }
+
+body {
+  background: var(--bg-base);
+  color: var(--ash);
+  font-family: 'IBM Plex Mono', monospace;
+  overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+/* ---------- EPISODES PAGE (Netflix-style layout) ---------- */
+
+.episodes-page {
+  min-height: 100vh;
+  background: var(--bg-base);
+  padding-bottom: 60px;
+}
+
+/* ----- Hero banner ----- */
+
+.episodes-hero {
+  position: relative;
+  min-height: 56vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  padding: 80px 24px 60px;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* subtle bottom fade so the hero blends into the row below, like Netflix's
+   banner-to-content transition */
+.episodes-hero::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, var(--bg-base));
+  pointer-events: none;
+}
+
+.episodes-logo {
+  width: min(24vw, 170px);
+  height: auto;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 40px rgba(245, 166, 35, 0));
+}
+
+.episodes-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+  letter-spacing: 4px;
+  color: var(--gold);
+}
+
+.yt-channel-link {
+  display: block;
+  width: min(90vw, 420px);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 0 0 rgba(245, 166, 35, 0);
+  transform: translateY(0);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  z-index: 1;
+}
+
+.yt-channel-link img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.yt-channel-link:hover,
+.yt-channel-link:focus-visible {
+  box-shadow: 0 0 45px 10px rgba(245, 166, 35, 0.45);
+  transform: translateY(-3px);
+}
+
+/* ----- Episode row ----- */
+
+.episode-row-section {
+  padding-top: 8px;
+}
+
+.row-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  color: var(--ash);
+  padding: 0 48px;
+  margin-bottom: 14px;
+}
+
+.episode-row-wrap {
+  position: relative;
+}
+
+.episode-row {
+  display: flex;
+  gap: 25px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 30px 48px 40px; /* extra top/bottom padding gives hover-scaled cards room to grow */
+  scrollbar-width: thin;
+  scrollbar-color: var(--blood) transparent;
+}
+
+.episode-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.episode-row::-webkit-scrollbar-thumb {
+  background: var(--blood);
+  border-radius: 3px;
+}
+
+.row-arrow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 48px;
+  border: none;
+  background: linear-gradient(to right, var(--bg-base), transparent);
+  color: var(--ash);
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 4;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.episode-row-wrap:hover .row-arrow {
+  opacity: 1;
+}
+
+.row-arrow-right {
+  right: 0;
+  background: linear-gradient(to left, var(--bg-base), transparent);
+}
+
+.row-arrow-left {
+  left: 0;
+}
+
+.episode-card {
+  position: relative;
+  flex: 0 0 240px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, z-index 0s;
+}
+
+.episode-card:hover,
+.episode-card:focus-visible {
+  transform: scale(1.12);
+  z-index: 3;
+}
+
+.episode-thumb {
+  aspect-ratio: 16 / 9;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.episode-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+  transition: opacity 0.25s ease;
+}
+
+.episode-card:hover .episode-thumb img {
+  opacity: 0.35; /* dims as the info overlay takes over, like Netflix's hover state */
+}
+
+.episode-info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 10px 12px 12px;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 20%, transparent);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.episode-card:hover .episode-info,
+.episode-card:focus-visible .episode-info {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.episode-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.episode-tag {
+  font-size: 11px;
+  color: var(--ash-dim);
+}
+
+/* ----- Teaser/Update video cards ----- */
+
+.video-card {
+  position: relative;
+}
+
+.play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  padding-left: 3px; /* optically center the triangle glyph */
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.video-card:hover .play-icon,
+.video-card:focus-visible .play-icon {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ----- Video lightbox modal ----- */
+
+.video-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.video-modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.video-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 9, 8, 0.9);
+}
+
+.video-modal-content {
+  position: relative;
+  width: min(90vw, 900px);
+  aspect-ratio: 16 / 9;
+  z-index: 1;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 166, 35, 0.15);
+}
+
+.video-modal-frame {
+  width: 100%;
+  height: 100%;
+}
+
+.video-modal-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-modal-close {
+  position: absolute;
+  top: -42px;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--ash);
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.video-modal-close:hover {
+  color: var(--gold);
+}
+
+
+@media (max-width: 640px) {
+  .episodes-hero { padding: 60px 20px 48px; min-height: 44vh; }
+  .row-label { padding: 0 20px; }
+  .episode-row { padding: 24px 20px 32px; }
+  .episode-card { flex-basis: 160px; }
+  .row-arrow { display: none; } /* touch scrolling handles this on mobile */
+}
+
+
+.placeholder-page {
+  min-height: 100vh;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  padding: 24px;
+}
+
+.placeholder-logo {
+  width: min(30vw, 220px);
+  height: auto;
+  opacity: 0.85;
+}
+
+.placeholder-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  letter-spacing: 3px;
+  color: var(--gold);
+}
+
+.placeholder-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  color: var(--ash-dim);
+  letter-spacing: 1px;
+}
+
+/* ---------- CHARACTERS PAGE ---------- */
+
+.characters-header {
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 24px 26px;
+}
+
+.characters-logo {
+  width: min(18vw, 120px);
+  height: auto;
+  opacity: 0.9;
+}
+
+.characters-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(1.1rem, 3vw, 1.6rem);
+  letter-spacing: 3px;
+  color: var(--gold);
+}
+
+/* ---------- COMMUNITY PAGE (full-page chat layout) ---------- */
+
+.community-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-base);
+  overflow: hidden; /* only the message list itself scrolls */
+}
+
+.community-header {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 24px 14px;
+}
+
+.community-logo {
+  width: min(14vw, 90px);
+  height: auto;
+  opacity: 0.85;
+}
+
+.community-title {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(1rem, 2.6vw, 1.3rem);
+  letter-spacing: 3px;
+  color: var(--gold);
+}
+
+/* ---------- COMMUNITY CHAT ---------- */
+
+.chat-box {
+  flex: 1;
+  min-height: 0; /* required so flex children can actually shrink and scroll */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.chat-status {
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--ash-dim);
+  padding: 0 4px 8px;
+  text-align: center;
+}
+
+.chat-status-error {
+  color: var(--blood);
+}
+
+.chat-messages {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 4px 4px 16px;
+}
+
+.chat-message-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 10px;
+}
+
+.chat-message-name {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.chat-message-time {
+  color: var(--ash-dim);
+}
+
+.chat-message-text {
+  font-size: 14px;
+  color: var(--ash);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.chat-form {
+  flex-shrink: 0;
+  display: flex;
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(217, 114, 10, 0.25);
+  background: var(--bg-deep);
+}
+
+.chat-input {
+  background: transparent;
+  border: none;
+  color: var(--ash);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px;
+  padding: 16px;
+  outline: none;
+}
+
+.chat-input::placeholder {
+  color: var(--ash-dim);
+}
+
+.chat-name {
+  width: 130px;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(217, 114, 10, 0.2);
+}
+
+.chat-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-send {
+  background: var(--ember);
+  color: var(--bg-deep);
+  border: none;
+  padding: 0 24px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+}
+
+.chat-send:hover {
+  background: var(--gold);
+}
+
+.chat-input:disabled,
+.chat-send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .community-header { padding: 16px 16px 10px; }
+  .chat-box, .chat-form { padding-left: 12px; padding-right: 12px; }
+  .chat-name { width: 90px; }
+}
+
+.tab-nav {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  z-index: 100;
+  display: flex;
+  flex-direction: row-reverse; /* icon stays pinned to the right edge */
+  align-items: flex-start;
+  transition: opacity 0.3s ease;
+}
+
+.tab-nav.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tab-icon {
+  width: 44px;
+  height: 44px;
+  background-image: url('tab-sprite.png');
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 770% 100%; /* 7 frames */
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.tab-icon:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+.side-panel {
+  max-width: 0;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--bg-deep);
+  border: 1px solid rgba(197, 0, 0, 0.486);
+  border-radius: 4px;
+  padding: 14px 0;
+  margin-right: 0;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 40px rgba(82, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: max-width 0.25s ease, opacity 0.2s ease, margin-right 0.25s ease;
+  white-space: nowrap;
+}
+
+.tab-nav.is-open .side-panel {
+  max-width: 240px;
+  margin-right: 12px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.side-link {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: var(--ash);
+  text-decoration: none;
+  padding: 12px 20px;
+  white-space: nowrap;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.side-link:hover,
+.side-link:focus-visible {
+  color: var(--blood);
+  background: rgba(192, 192, 192, 0.603);
+}
+
+@media (max-width: 640px) {
+  .tab-nav { top: 16px; right: 16px; }
+}
+
+/* ---------- HERO ---------- */
+
+.hero {
+  height: 100vh;
+  width: 100%;
+  background: var(--bg-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-inner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform, opacity;
+}
+
+.hero-logo {
+  width: min(70vw, 640px);
+  height: auto;
+  filter: drop-shadow(0 0 40px rgba(217, 114, 10, 0.15));
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  will-change: opacity;
+}
+
+.scroll-cue-label {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+
+.scroll-cue-arrow {
+  display: block;
+  width: 36px;
+  height: 36px;
+  background-image: url('arrow-sprite.png');
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 8100% 100%; /* 81 frames */
+}
+
+/* ---------- REEL (scroll-scrubbed video) ---------- */
+
+.reel {
+  position: relative;
+  width: 100%;
+  background: var(--bg-deep);
+}
+
+.reel-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.reel-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* the moody desaturated/darkened look is specific to the homepage's
+   "security camera" storefront footage — character reels stay untouched
+   so any overlay/color-grade you've already edited into those clips
+   shows exactly as you made it, not fought against by an extra filter. */
+.storefront-reel .reel-video {
+  filter: saturate(0.85) contrast(1.05) brightness(0.8);
+}
+
+/* camera-monitor framing */
+
+.scanlines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.18) 0px,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  mix-blend-mode: multiply;
+  z-index: 2;
+}
+
+.vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.75) 100%);
+  z-index: 2;
+}
+
+.reel-disclaimer {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  z-index: 3;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  color: var(--ash-dim);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .reel-disclaimer { font-size: 9px; bottom: 12px; right: 14px; }
+}
+
+.grain {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  opacity: 0.05;
+  z-index: 2;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.hud {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  right: 22px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--ash);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+}
+
+.hud-rec {
+  color: var(--blood);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hud-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--blood);
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.2; }
+}
+
+.hud-cam {
+  color: var(--ash-dim);
+}
+
+.hud-time {
+  margin-left: auto;
+  color: var(--blood);
+}
+
+.caption-track {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14%;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  padding: 0 24px;
+  text-align: center;
+  pointer-events: none;
+}
+
+.caption {
+  position: absolute;
+  max-width: 680px;
+  font-size: clamp(1.1rem, 3vw, 1.7rem);
+  line-height: 1.4;
+  color: var(--ash);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.9), 0 0 30px rgba(0,0,0,0.6);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.caption.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.caption a {
+  color: var(--gold);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ember);
+  pointer-events: auto;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.caption a:hover,
+.caption a:focus-visible {
+  color: var(--white);
+  border-color: var(--gold);
+}
+
+.caption:nth-child(5) {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.9rem, 2.4vw, 1.3rem);
+  letter-spacing: 2px;
+  color: var(--gold);
+}
+
+/* ----- Character bio card (used on characters.html) ----- */
+
+.character-caption {
+  left: 6%;
+  right: auto;
+  bottom: 12%;
+  max-width: 480px;
+  text-align: left;
+  transform: translateY(14px); /* overrides the base .caption transform for a left-card slide-up */
+}
+
+.character-caption.is-visible {
+  transform: translateY(0);
+}
+
+.character-name {
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(1.1rem, 2.6vw, 1.5rem);
+  letter-spacing: 2px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+
+.character-bio {
+  font-size: clamp(0.85rem, 1.6vw, 1rem);
+  line-height: 1.7;
+  color: var(--ash);
+}
+
+/* ---------- OUTRO ---------- */
+
+.outro {
+  min-height: 60vh;
+  background: var(--bg-base);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 80px 24px;
+  text-align: center;
+}
+
+.outro-logo {
+  width: min(40vw, 320px);
+  height: auto;
+  opacity: 0.9;
+}
+
+.outro-tag {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--white);
+}
+
+@media (max-width: 640px) {
+  .hud { font-size: 7px; gap: 10px; }
+  .hud-cam { display: none; }
+  .caption-track { bottom: 18%; }
+}
