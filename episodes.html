@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EPISODES — Five Nights at Freddy's: Bloodlines</title>
+<link rel="icon" type="image/png" href="FNAFBloodlinesLogo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV: hover-triggered tab icon + sliding side panel -->
+  <nav class="tab-nav" id="tabNav">
+    <button class="tab-icon" id="tabIcon" aria-label="Open site navigation" aria-expanded="false"></button>
+    <aside class="side-panel" id="sidePanel">
+      <a class="side-link" href="index.html">Home</a>
+      <a class="side-link" href="characters.html">Characters</a>
+      <a class="side-link" href="locations.html">Locations</a>
+      <a class="side-link" href="watch.html">Watch</a>
+      <a class="side-link" href="about.html">About</a>
+      <a class="side-link" href="community.html">Community</a>
+    </aside>
+  </nav>
+
+  <section class="episodes-page">
+    <div class="episodes-hero">
+      <img src="FNAFBloodlinesLogo.png" alt="" class="episodes-logo" aria-hidden="true">
+      <h1 class="episodes-title">EPISODES</h1>
+      <a class="yt-channel-link" href="https://www.youtube.com/@YTGinga/videos" target="_blank" aria-label="Visit the YouTube channel">
+        <img src="MyYt.png" alt="YTGinga on YouTube">
+      </a>
+    </div>
+
+    <div class="episode-row-section">
+      <h2 class="row-label">Season 1</h2>
+      <div class="episode-row-wrap">
+        <button class="row-arrow row-arrow-left" aria-label="Scroll left">&#10094;</button>
+
+        <!-- EDIT ME: swap in real titles/thumbnails as episodes get made.
+             Duplicate an .episode-card block to add more than 5, or
+             duplicate the whole .episode-row-section for a second row
+             (e.g. a "Season 2" row) once you have one. -->
+        <div class="episode-row" id="episodeRow">
+          <!-- EDIT ME: these two are real videos, not placeholders — remove
+               this block once the series releases and Episode 1 is real. -->
+          <div class="episode-card video-card" tabindex="0" data-video-id="GzA_RyRXz_8">
+            <div class="episode-thumb"><img src="https://img.youtube.com/vi/GzA_RyRXz_8/hqdefault.jpg" alt="Teaser"></div>
+            <div class="play-icon" aria-hidden="true">&#9658;</div>
+            <div class="episode-info">
+              <p class="episode-name">Teaser</p>
+              <p class="episode-tag">Watch now</p>
+            </div>
+          </div>
+          <div class="episode-card video-card" tabindex="0" data-video-id="M9KE4A8g3hk">
+            <div class="episode-thumb"><img src="https://img.youtube.com/vi/M9KE4A8g3hk/hqdefault.jpg" alt="Update"></div>
+            <div class="play-icon" aria-hidden="true">&#9658;</div>
+            <div class="episode-info">
+              <p class="episode-name">Update</p>
+              <p class="episode-tag">Watch now</p>
+            </div>
+          </div>
+          <div class="episode-card" tabindex="0">
+            <div class="episode-thumb"><img src="EpisodeWait.png" alt="Episode 1 — not yet released"></div>
+            <div class="episode-info">
+              <p class="episode-name">Episode 1</p>
+              <p class="episode-tag">Coming soon</p>
+            </div>
+          </div>
+          <div class="episode-card" tabindex="0">
+            <div class="episode-thumb"><img src="EpisodeWait.png" alt="Episode 2 — not yet released"></div>
+            <div class="episode-info">
+              <p class="episode-name">Episode 2</p>
+              <p class="episode-tag">Coming soon</p>
+            </div>
+          </div>
+          <div class="episode-card" tabindex="0">
+            <div class="episode-thumb"><img src="EpisodeWait.png" alt="Episode 3 — not yet released"></div>
+            <div class="episode-info">
+              <p class="episode-name">Episode 3</p>
+              <p class="episode-tag">Coming soon</p>
+            </div>
+          </div>
+          <div class="episode-card" tabindex="0">
+            <div class="episode-thumb"><img src="EpisodeWait.png" alt="Episode 4 — not yet released"></div>
+            <div class="episode-info">
+              <p class="episode-name">Episode 4</p>
+              <p class="episode-tag">Coming soon</p>
+            </div>
+          </div>
+          <div class="episode-card" tabindex="0">
+            <div class="episode-thumb"><img src="EpisodeWait.png" alt="Episode 5 — not yet released"></div>
+            <div class="episode-info">
+              <p class="episode-name">Episode 5</p>
+              <p class="episode-tag">Coming soon</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="row-arrow row-arrow-right" aria-label="Scroll right">&#10095;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Lightbox player for the Teaser/Update cards above -->
+  <div class="video-modal" id="videoModal" aria-hidden="true">
+    <div class="video-modal-backdrop" id="videoModalBackdrop"></div>
+    <div class="video-modal-content">
+      <button class="video-modal-close" id="videoModalClose" aria-label="Close video">&times;</button>
+      <div class="video-modal-frame" id="videoModalFrame"></div>
+    </div>
+  </div>
+
+<script src="script.js"></script>
+</body>
+</html>
