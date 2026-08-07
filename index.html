@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five Nights at Freddy's: Bloodlines</title>
+<link rel="icon" type="image/png" href="FNAFBloodlinesLogo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAV: hover-triggered tab icon + sliding side panel -->
+  <nav class="tab-nav" id="tabNav">
+    <button class="tab-icon" id="tabIcon" aria-label="Open site navigation" aria-expanded="false"></button>
+    <aside class="side-panel" id="sidePanel">
+      <a class="side-link" href="characters.html">Characters</a>
+      <a class="side-link" href="episodes.html">Episodes</a>
+      <a class="side-link" href="locations.html">Locations</a>
+      <a class="side-link" href="watch.html">Watch</a>
+      <a class="side-link" href="about.html">About</a>
+      <a class="side-link" href="community.html">Community</a>
+    </aside>
+  </nav>
+
+  <!-- HERO: logo on solid background -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+      <img src="FNAFBloodlinesLogo.png" alt="Five Nights at Freddy's: Bloodlines" class="hero-logo" id="heroLogo">
+    </div>
+    <div class="scroll-cue">
+      <span class="scroll-cue-label">SCROLL TO BEGIN</span>
+      <span class="scroll-cue-arrow" id="scrollCueArrow"></span>
+    </div>
+  </section>
+
+  <!-- REEL: scroll-scrubbed video with camera-monitor framing -->
+  <div class="reel storefront-reel" style="height: 500vh;">
+    <div class="reel-sticky">
+
+      <video
+        class="reel-video"
+        src="StoreFrontStill.mov"
+        muted
+        playsinline
+        preload="auto"
+      ></video>
+
+      <div class="scanlines" aria-hidden="true"></div>
+      <div class="vignette" aria-hidden="true"></div>
+      <div class="grain" aria-hidden="true"></div>
+
+      <div class="hud">
+        <span class="hud-rec"><span class="hud-dot"></span>REC</span>
+        <span class="hud-cam">CAM 03 — STOREFRONT</span>
+        <span class="hud-time">00:00.0</span>
+      </div>
+
+      <!-- EDIT ME: swap this placeholder copy for your real series description.
+           Each <p> shows/hides based on how far the user has scrolled through
+           the reel (see data-range in script.js). Add or remove lines freely. -->
+      <div class="caption-track">
+        <p class="caption" data-range="0.00,0.16">FIVE NIGHTS AT FREDDY'S: BLOODLINES</p>
+        <p class="caption" data-range="0.16,0.32">This series is set to redefine what I created back in 2023.</p>
+        <p class="caption" data-range="0.32,0.50">A Minecraft roleplay series inspired by the lore of the FNAF games and my own interpretation of its story.</p>
+        <p class="caption" data-range="0.50,0.68">Five reimagined episodes. New victims. Old secrets.</p>
+        <p class="caption" data-range="0.68,0.84">Watch at <a href="https://www.youtube.com/@YTGinga/videos" target="_blank">youtube.com/@YTGinga</a></p>
+        <p class="caption" data-range="0.84,1.00"><strong>Coming soon.</strong></p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- OUTRO -->
+  <section class="outro">
+    <img src="FNAFBloodlinesLogo.png" alt="" class="outro-logo" aria-hidden="true">
+    <p class="outro-tag">Follow for release updates.</p>
+  </section>
+
+<script src="script.js"></script>
+</body>
+</html>
