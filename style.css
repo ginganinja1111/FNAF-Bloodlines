@@ -541,6 +541,28 @@ body {
   .chat-name { width: 90px; }
 }
 
+/* ---------- TEMP: iOS VIDEO BUG WARNING ---------- */
+
+.ios-warning-banner {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 150;
+  background: var(--blood);
+  color: var(--ash);
+  text-align: center;
+  padding: 10px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 640px) {
+  .ios-warning-banner { font-size: 11px; padding: 8px 12px; }
+}
+
 .tab-nav {
   position: fixed;
   top: 24px;
