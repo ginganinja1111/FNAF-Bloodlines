@@ -131,8 +131,8 @@ function updateHero() {
 // Each .reel wrapper is tall (e.g. 500vh) so there's room to scroll "through"
 // it. While its sticky child is pinned, we map scroll progress across that
 // wrapper directly onto its own video's timeline. A page can have any number
-// of .reel sections stacked back to back (e.g. characters.html has two) —
-// each one is tracked and updated independently.
+// of .reel sections stacked back to back (e.g. characters.html has several)
+// — each one is tracked and updated independently.
 
 function formatTime(t) {
   const m = Math.floor(t / 60).toString().padStart(2, '0');
@@ -158,6 +158,37 @@ const reels = Array.from(document.querySelectorAll('.reel')).map(reelEl => {
 
   return { reelEl, video, hudTime, captions };
 });
+
+// ---------- iOS VIDEO UNLOCK ----------
+// iOS Safari will not load or decode ANY video frame data — even with
+// preload="auto" and muted set as HTML attributes — until a video has been
+// explicitly started via .play() from inside a real user gesture. Our reels
+// only ever set video.currentTime during scroll; we never call .play(), so
+// iOS never gets that unlock signal and the videos simply never load at all.
+//
+// Fix: on the very first touch (or click, for iPads with trackpads/mice)
+// anywhere on the page, quietly play-then-immediately-pause every reel video
+// once. That one silent play() is enough to unlock each video for
+// programmatic seeking for the rest of the session.
+
+let iosVideosUnlocked = false;
+
+function unlockVideosForIOS() {
+  if (iosVideosUnlocked) return;
+  iosVideosUnlocked = true;
+
+  reels.forEach(({ video }) => {
+    if (!video) return;
+    video.muted = true; // belt-and-suspenders — iOS sometimes needs this set via JS, not just the HTML attribute
+    const playPromise = video.play();
+    if (playPromise && playPromise.then) {
+      playPromise.then(() => video.pause()).catch(() => {});
+    }
+  });
+}
+
+document.addEventListener('touchstart', unlockVideosForIOS, { once: true, passive: true });
+document.addEventListener('click', unlockVideosForIOS, { once: true });
 
 function updateReels() {
   if (reels.length === 0) return; // this page has no scroll-scrubbed reel (e.g. episodes.html)
